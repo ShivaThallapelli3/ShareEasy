@@ -3,49 +3,57 @@ const multer = require("multer");
 const path = require("path");
 const QRCode = require("qrcode");
 const File = require("../models/File");
+const fs = require("fs");
 
 const router = express.Router();
 
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 // Multer Storage Configuration
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads");
-    cb(null, uploadPath);
-  },
+  destination: uploadsDir,
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-
 
 const upload = multer({ storage });
 
 // File Upload Route
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
-    const fileUrl = `https://shareeasy-frontend.onrender.com/files/${req.file.filename}`;
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-    console.log("endpoint reached");
+    const fileUrl = `${req.protocol}://${req.get("host")}/files/${req.file.filename}`;
     const qrCodeUrl = await QRCode.toDataURL(fileUrl);
-
-    console.log("qr generated");
     
     const newFile = new File({
       filename: req.file.filename,
       fileUrl,
       qrCodeUrl,
     });
+
     await newFile.save();
 
-    console.log("inserted");
-
-    res.json({ fileUrl, qrCodeUrl });
+    res.json({ 
+      status: "success",
+      fileUrl, 
+      qrCodeUrl,
+      filename: req.file.filename
+    });
   } catch (error) {
-    res.status(500).json({ error: "Upload failed" });
+    console.error("Upload error:", error);
+    res.status(500).json({ 
+      error: "Upload failed",
+      details: error.message 
+    });
   }
 });
-
-// Serve Uploaded Files
-router.use("/files", express.static("uploads"));
 
 module.exports = router;
