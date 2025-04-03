@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/fileShareDB", {
+    await mongoose.connect("process.env.MONGO_URI/fileShareDB", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
