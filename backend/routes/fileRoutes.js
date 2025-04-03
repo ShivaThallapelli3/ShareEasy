@@ -18,7 +18,7 @@ const upload = multer({ storage });
 // File Upload Route
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
-    const fileUrl = `http://localhost:5000/files/${req.file.filename}`;
+    const fileUrl = `https://shareeasy-frontend.onrender.com/files/${req.file.filename}`;
     const qrCodeUrl = await QRCode.toDataURL(fileUrl);
 
     const newFile = new File({
