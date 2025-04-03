@@ -20,7 +20,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const fileUrl = `https://shareeasy-frontend.onrender.com/files/${req.file.filename}`;
 
-    // console.log("endpoint reached");
+    console.log("endpoint reached");
     const qrCodeUrl = await QRCode.toDataURL(fileUrl);
 
     const newFile = new File({
