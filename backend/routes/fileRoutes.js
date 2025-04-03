@@ -23,12 +23,16 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     console.log("endpoint reached");
     const qrCodeUrl = await QRCode.toDataURL(fileUrl);
 
+    console.log("qr generated");
+    
     const newFile = new File({
       filename: req.file.filename,
       fileUrl,
       qrCodeUrl,
     });
     await newFile.save();
+
+    console.log("inserted");
 
     res.json({ fileUrl, qrCodeUrl });
   } catch (error) {
