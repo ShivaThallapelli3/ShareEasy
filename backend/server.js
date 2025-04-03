@@ -19,6 +19,18 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
+// Root Route for Debugging (Optional)
+app.get("/", (req, res) => {
+  res.json({
+    status: "success",
+    message: "Backend is running!",
+    availableRoutes: [
+      { method: "GET", path: "/api/home" },
+      { method: "POST", path: "/api/upload" },
+      { method: "GET", path: "/files/:filename" },
+    ],
+  });
+});
 // Serve static files from the uploads directory
 app.use("/files", express.static(path.join(__dirname, UPLOADS_DIR)));
 
