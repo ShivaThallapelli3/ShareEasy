@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 const UPLOADS_DIR = process.env.UPLOADS_DIR || "uploads";
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 // Connect to MongoDB
