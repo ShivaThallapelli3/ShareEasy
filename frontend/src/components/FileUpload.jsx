@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import axios from "axios";
 
-const API_UPLOAD_URL = import.meta.env.VITE_API_UPLOAD_URL;
+const API_UPLOAD_URL = "https://shareeasy-gvxs.onrender.com/api/upload";
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
